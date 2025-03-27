@@ -1,52 +1,36 @@
-<x-layouts.app :title="__('Categories')">
+<x-layouts.app :title="__('Payment Types')">
     <div class="mb-4 flex justify-between items-center">
-
-
         <flux:breadcrumbs>
             <flux:breadcrumbs.item href="{{ route('dashboard') }}">Panel</flux:breadcrumbs.item>
-            <flux:breadcrumbs.item href="{{ route('admin.categories.index') }}">Categorias</flux:breadcrumbs.item>
+            <flux:breadcrumbs.item href="{{ route('admin.paymentTypes.index') }}">Tipos de pago</flux:breadcrumbs.item>
         </flux:breadcrumbs>
 
-        <a href="{{ route('admin.categories.create') }}" class="btn btn-blue text-xs">Nuevo</a>
+        <a href="{{ route('admin.paymentTypes.create') }}" class="btn btn-blue text-xs">Nuevo</a>
     </div>
 
-    <div
-        class="p-5 relative overflow-x-auto shadow-md sm:rounded-lg border border-gray-200 dark:border-zinc-700 bg-white dark:bg-zinc-800">
-
-        <table id="table" class="display">
+    <div class="p-5 relative overflow-x-auto shadow-md sm:rounded-lg border border-gray-200 dark:border-zinc-700 bg-white dark:bg-zinc-800">
+        <table id="table" class="display w-full">
             <thead class="text-xs uppercase bg-gray-50 dark:bg-zinc-700 dark:text-gray-300">
                 <tr>
-                    <th scope="col"  class="px-6 py-3 w-10">
-                        ID
-                    </th>
-                    <th scope="col" class="px-6 py-3">
-                        Categoria
-                    </th>
-                    <th scope="col" class="px-6 py-3">
-                        <span class="sr-only">Editar</span>
-                    </th>
+                    <th class="px-6 py-3 w-10">ID</th>
+                    <th class="px-6 py-3">Nombre</th>
+                    <th class="px-6 py-3"><span class="sr-only">Acciones</span></th>
                 </tr>
             </thead>
             <tbody>
-                @foreach ($categories as $category)
+                @foreach ($paymentType as $type)
                     <tr>
-                        <td>
-                            {{ $category->id }}
-                        </td>
-
-                        <td>{{ $category->name }}</td>
+                        <td>{{ $type->id }}</td>
+                        <td>{{ $type->name }}</td>
                         <td>
                             <div class="flex items-center justify-end space-x-1">
-                                <a class="btn bg-emerald-800 btn-sm te text-white"
-                                    href="{{ route('admin.categories.edit', $category) }}">
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                        stroke-width="1.5" stroke="currentColor" class="size-6">
+                                <a href="{{ route('admin.paymentTypes.edit', $type) }}" class="btn bg-emerald-800 btn-sm text-white">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="size-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
                                         <path stroke-linecap="round" stroke-linejoin="round"
-                                            d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" />
+                                            d="m16.862 4.487 1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zM16.862 4.487L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
                                     </svg>
                                 </a>
-                                <form class="delete-form" action="{{ route('admin.categories.destroy', $category) }}"
-                                    method="POST">
+                                <form class="delete-form" action="{{ route('admin.paymentTypes.destroy', $type) }}" method="POST">
                                     @csrf
                                     @method('DELETE')
                                     <button class="btn bg-red-700 btn-sm text-white">
@@ -63,15 +47,13 @@
                 @endforeach
             </tbody>
         </table>
-
-
     </div>
 
     @push('js')
         <script>
-            forms = document.querySelectorAll('.delete-form');
-            forms.forEach(form => {
-                form.addEventListener('submit', (e) => {
+            // Confirmación con SweetAlert
+            document.querySelectorAll('.delete-form').forEach(form => {
+                form.addEventListener('submit', e => {
                     e.preventDefault();
                     Swal.fire({
                         title: '¿Estás seguro?',
@@ -82,14 +64,13 @@
                         cancelButtonColor: '#d33',
                         confirmButtonText: '¡Sí, bórralo!',
                         cancelButtonText: 'Cancelar'
-                    }).then((result) => {
+                    }).then(result => {
                         if (result.isConfirmed) {
                             form.submit();
                         }
-                    })
+                    });
                 });
             });
         </script>
     @endpush
-
 </x-layouts.app>

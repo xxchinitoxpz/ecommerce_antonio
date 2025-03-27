@@ -1,27 +1,55 @@
 @php
    $groups=[
-        'Platform' => [[
-            'name' => 'Dashboard',
+        'Plataforma' => [[
+            'name' => 'Panel',
             'icon' => 'home',
             'url' => route('dashboard'),
             'current' => request()->routeIs('dashboard'),
         ],
     ],
-    'Products setings' => [
+    'Proceso de venta' => [[
+            'name' => 'Listado ventas',
+            'icon' => 'shopping-cart',
+            'url' => route('admin.sales.index'),
+            'current' => request()->routeIs('admin.sales.index','admin.sales.edit'),
+        ],
         [
-            'name' => 'Products',
+            'name' => 'Registrar venta',
+            'icon' => 'plus',
+            'url' => route('admin.sales.create'),
+            'current' => request()->routeIs('admin.sales.create'),
+        ],
+    ],
+    
+    'Configuración de pagos' => [
+        [
+            'name' => 'Vouchers',
+            'icon' => 'document-arrow-down',
+            'url' => route('admin.vouchers.index'),
+            'current' => request()->routeIs('admin.vouchers.*'),
+        ],
+        [
+            'name' => 'Tipo de pagos',
+            'icon' => 'credit-card',
+            'url' => route('admin.paymentTypes.index'),
+            'current' => request()->routeIs('admin.paymenttypes.*'),
+        ],     
+    ],
+    'Configuración de productos' => [
+        [
+            'name' => 'Productos',
             'icon' => 'cube',
             'url' => route('admin.products.index'),
             'current' => request()->routeIs('admin.products.*'),
         ],
         [
-            'name' => 'Categories',
+            'name' => 'Categorias',
             'icon' => 'funnel',
             'url' => route('admin.categories.index'),
             'current' => request()->routeIs('admin.categories.*'),
         ], 
         [
-            'name' => 'Brands',
+            'name' => 'Marcas',
             'icon' => 'folder',
             'url' => route('admin.brands.index'),
             'current' => request()->routeIs('admin.brands.*'),
@@ -166,5 +194,8 @@
         {{ $slot }}
 
         @fluxScripts
+
+
+        
     </body>
 </html>

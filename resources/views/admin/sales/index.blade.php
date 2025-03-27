@@ -1,55 +1,67 @@
-<x-layouts.app :title="__('Categories')">
+<x-layouts.app :title="'Ventas'">
     <div class="mb-4 flex justify-between items-center">
-
-
         <flux:breadcrumbs>
             <flux:breadcrumbs.item href="{{ route('dashboard') }}">Panel</flux:breadcrumbs.item>
-            <flux:breadcrumbs.item href="{{ route('admin.categories.index') }}">Categorias</flux:breadcrumbs.item>
+            <flux:breadcrumbs.item>Ventas</flux:breadcrumbs.item>
         </flux:breadcrumbs>
 
-        <a href="{{ route('admin.categories.create') }}" class="btn btn-blue text-xs">Nuevo</a>
+        <a href="{{ route('admin.sales.create') }}" class="btn btn-blue text-xs">Nueva venta</a>
     </div>
 
     <div
         class="p-5 relative overflow-x-auto shadow-md sm:rounded-lg border border-gray-200 dark:border-zinc-700 bg-white dark:bg-zinc-800">
-
-        <table id="table" class="display">
+        <table id="table" class="display w-full">
             <thead class="text-xs uppercase bg-gray-50 dark:bg-zinc-700 dark:text-gray-300">
                 <tr>
-                    <th scope="col"  class="px-6 py-3 w-10">
-                        ID
-                    </th>
-                    <th scope="col" class="px-6 py-3">
-                        Categoria
-                    </th>
-                    <th scope="col" class="px-6 py-3">
-                        <span class="sr-only">Editar</span>
-                    </th>
+                    <th class="px-6 py-3 w-10">ID</th>
+                    <th class="px-6 py-3">Usuario</th>
+                    <th class="px-6 py-3">Tipo de pago</th>
+                    <th class="px-6 py-3">Total</th>
+                    <th class="px-6 py-3">Fecha</th>
+                    <th class="px-6 py-3 text-right"><span class="sr-only">Acciones</span></th>
                 </tr>
             </thead>
             <tbody>
-                @foreach ($categories as $category)
+                @foreach ($sales as $sale)
                     <tr>
-                        <td>
-                            {{ $category->id }}
-                        </td>
-
-                        <td>{{ $category->name }}</td>
-                        <td>
+                        <td>{{ $sale->id }}</td>
+                        <td>{{ $sale->user->name ?? '—' }}</td>
+                        <td>{{ $sale->paymentType->name ?? '—' }}</td>
+                        <td>S/. {{ number_format($sale->total, 2) }}</td>
+                        <td>{{ $sale->created_at->format('d/m/Y H:i') }}</td>
+                        <td class="text-right">
                             <div class="flex items-center justify-end space-x-1">
-                                <a class="btn bg-emerald-800 btn-sm te text-white"
-                                    href="{{ route('admin.categories.edit', $category) }}">
+                                <!-- Editar -->
+                                <a href="{{ route('admin.sales.edit', $sale) }}"
+                                    class="btn bg-emerald-800 btn-sm  text-white" title="Editar venta">
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                         stroke-width="1.5" stroke="currentColor" class="size-6">
                                         <path stroke-linecap="round" stroke-linejoin="round"
                                             d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" />
                                     </svg>
                                 </a>
-                                <form class="delete-form" action="{{ route('admin.categories.destroy', $category) }}"
+
+                                <!-- Detalle -->
+                                @if ($sale->voucher)
+                                    <a href="{{ asset('storage/' . $sale->voucher->path) }}" target="_blank"
+                                        class="btn btn-sm bg-blue-600 text-white" title="Ver boleta">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="size-5" fill="none"
+                                            viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                d="M15 12H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                        </svg>
+                                    </a>
+                                @else
+                                    <span class="text-sm text-gray-400 italic">Sin boleta</span>
+                                @endif
+
+
+                                <!-- Eliminar -->
+                                <form class="delete-form" action="{{ route('admin.sales.destroy', $sale) }}"
                                     method="POST">
                                     @csrf
                                     @method('DELETE')
-                                    <button class="btn bg-red-700 btn-sm text-white">
+                                    <button class="btn btn-sm bg-red-700 text-white" title="Eliminar">
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                             stroke-width="1.5" stroke="currentColor" class="size-6">
                                             <path stroke-linecap="round" stroke-linejoin="round"
@@ -63,33 +75,30 @@
                 @endforeach
             </tbody>
         </table>
-
-
     </div>
 
     @push('js')
         <script>
-            forms = document.querySelectorAll('.delete-form');
-            forms.forEach(form => {
-                form.addEventListener('submit', (e) => {
+            // Confirmación antes de eliminar
+            document.querySelectorAll('.delete-form').forEach(form => {
+                form.addEventListener('submit', e => {
                     e.preventDefault();
                     Swal.fire({
                         title: '¿Estás seguro?',
-                        text: "¡No podrás revertir esto!",
+                        text: "¡Esta acción no se puede deshacer!",
                         icon: 'warning',
                         showCancelButton: true,
                         confirmButtonColor: '#3085d6',
                         cancelButtonColor: '#d33',
-                        confirmButtonText: '¡Sí, bórralo!',
+                        confirmButtonText: 'Sí, eliminar',
                         cancelButtonText: 'Cancelar'
                     }).then((result) => {
                         if (result.isConfirmed) {
                             form.submit();
                         }
-                    })
+                    });
                 });
             });
         </script>
     @endpush
-
 </x-layouts.app>

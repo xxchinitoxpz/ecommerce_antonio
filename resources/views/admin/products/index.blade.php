@@ -1,13 +1,13 @@
-<x-layouts.app :title="__('Categories')">
+<x-layouts.app :title="__('Products')">
     <div class="mb-4 flex justify-between items-center">
 
 
         <flux:breadcrumbs>
             <flux:breadcrumbs.item href="{{ route('dashboard') }}">Panel</flux:breadcrumbs.item>
-            <flux:breadcrumbs.item href="{{ route('admin.categories.index') }}">Categorias</flux:breadcrumbs.item>
+            <flux:breadcrumbs.item href="{{ route('admin.products.index') }}">Productos</flux:breadcrumbs.item>
         </flux:breadcrumbs>
 
-        <a href="{{ route('admin.categories.create') }}" class="btn btn-blue text-xs">Nuevo</a>
+        <a href="{{ route('admin.products.create') }}" class="btn btn-blue text-xs">Nuevo</a>
     </div>
 
     <div
@@ -16,36 +16,58 @@
         <table id="table" class="display">
             <thead class="text-xs uppercase bg-gray-50 dark:bg-zinc-700 dark:text-gray-300">
                 <tr>
-                    <th scope="col"  class="px-6 py-3 w-10">
+                    <th class="px-6 py-3 w-10">
                         ID
                     </th>
-                    <th scope="col" class="px-6 py-3">
+                    <th class="px-6 py-3">
+                        Producto
+                    </th>
+                    <th class="px-6 py-3">
                         Categoria
                     </th>
-                    <th scope="col" class="px-6 py-3">
+                    <th class="px-6 py-3">
+                        Marca
+                    </th>
+                    <th class="px-6 py-3">
+                        Precio
+                    </th>
+                    <th class="px-6 py-3">
+                        Precio oferta
+                    </th>
+                    <th class="px-6 py-3">
+                        Stock
+                    </th>
+                    
+                    <th class="px-6 py-3">
                         <span class="sr-only">Editar</span>
                     </th>
                 </tr>
             </thead>
             <tbody>
-                @foreach ($categories as $category)
+                @foreach ($products as $product)
                     <tr>
                         <td>
-                            {{ $category->id }}
+                            {{ $product->id }}
                         </td>
 
-                        <td>{{ $category->name }}</td>
+                        <td>{{ $product->name }}</td>
+                        <td>{{ $product->category->name }}</td>
+                        <td>{{ $product->brand->name }}</td>
+                        <td>{{ $product->price }}</td>
+                        <td>{{ $product->discount }}</td>
+                        <td>{{ $product->stock }}</td>
+                        
                         <td>
                             <div class="flex items-center justify-end space-x-1">
                                 <a class="btn bg-emerald-800 btn-sm te text-white"
-                                    href="{{ route('admin.categories.edit', $category) }}">
+                                    href="{{ route('admin.products.edit', $product) }}">
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                         stroke-width="1.5" stroke="currentColor" class="size-6">
                                         <path stroke-linecap="round" stroke-linejoin="round"
                                             d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" />
                                     </svg>
                                 </a>
-                                <form class="delete-form" action="{{ route('admin.categories.destroy', $category) }}"
+                                <form class="delete-form" action="{{ route('admin.products.destroy', $product) }}"
                                     method="POST">
                                     @csrf
                                     @method('DELETE')

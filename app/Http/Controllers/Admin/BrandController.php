@@ -13,7 +13,8 @@ class BrandController extends Controller
      */
     public function index()
     {
-        //
+        $brands = Brand::orderBy('id', 'desc')->get();
+        return view('admin.brands.index', compact('brands'));
     }
 
     /**
@@ -21,7 +22,7 @@ class BrandController extends Controller
      */
     public function create()
     {
-        //
+        return view('admin.brands.create');
     }
 
     /**
@@ -29,7 +30,19 @@ class BrandController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $data = $request->validate([
+            'name' => 'required|string|max:255',
+        ]);
+
+        Brand::create($data);
+
+        session()->flash('swal', [
+            'icon' => 'success',
+            'title' => '¡Bien hecho!',
+            'text' => 'La marca se ha creado correctamente'
+        ]);
+
+        return redirect()->route('admin.brands.index');
     }
 
     /**
@@ -45,7 +58,7 @@ class BrandController extends Controller
      */
     public function edit(Brand $brand)
     {
-        //
+        return view('admin.brands.edit', compact('brand'));
     }
 
     /**
@@ -53,7 +66,19 @@ class BrandController extends Controller
      */
     public function update(Request $request, Brand $brand)
     {
-        //
+        $data = $request->validate([
+            'name' => 'required|string|max:255',
+        ]);
+
+        $brand->update($data);
+
+        session()->flash('swal', [
+            'icon' => 'success',
+            'title' => '¡Bien hecho!',
+            'text' => 'La marca se actualizo correctamente'
+        ]);
+
+        return redirect()->route('admin.brands.index');
     }
 
     /**
@@ -61,6 +86,14 @@ class BrandController extends Controller
      */
     public function destroy(Brand $brand)
     {
-        //
+        $brand->delete();
+
+        session()->flash('swal', [
+            'icon' => 'success',
+            'title' => '¡Bien hecho!',
+            'text' => 'La marca se ha eliminado correctamente'
+        ]);
+        
+        return redirect()->route('admin.brands.index');
     }
 }
