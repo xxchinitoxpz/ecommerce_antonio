@@ -1,11 +1,17 @@
 <?php
 
+use App\Http\Controllers\EcommerceController;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Response;
+
 use Livewire\Volt\Volt;
 
-Route::get('/', function () {
-    return view('welcome');
-})->name('home');
+// Route::get('/', function () {
+//     return redirect('/ecommerce/index.blade.php');
+// })->name('home');
+
+Route::get('/', [EcommerceController::class, 'index'])->name('home');
+
 
 Route::view('dashboard', 'dashboard')
     ->middleware(['auth', 'verified'])
