@@ -110,42 +110,37 @@
             <div class="order-md-last">
                 <h4 class="d-flex justify-content-between align-items-center mb-3">
                     <span class="text-primary">Your cart</span>
-                    {{-- @php
-                        $cartQty1 = array_sum(array_column(session('cart', []), 'quantity'));
-                    @endphp
-                    <span class="badge bg-primary rounded-circle pt-2">{{ $cartQty1 }}</span> --}}
-                    <span id="cart-count" class="badge bg-primary rounded-circle pt-2">
-                        {{ array_sum(array_column(session('cart', []), 'quantity')) }}
-                    </span>
-
+                    <span class="badge bg-primary rounded-circle pt-2">3</span>
                 </h4>
-                <ul class="list-group mb-3" id="cart-items">
-                    @php
-                        $cart = session('cart', []);
-                        $total = 0;
-                    @endphp
-
-                    @foreach ($cart as $item)
-                        @php $total += $item['price'] * $item['quantity']; @endphp
-                        <li class="list-group-item d-flex justify-content-between lh-sm">
-                            <div>
-                                <h6 class="my-0">{{ $item['name'] }}</h6>
-                                <small class="text-muted">Cantidad: {{ $item['quantity'] }}</small>
-                            </div>
-                            <span class="text-muted">${{ number_format($item['price'] * $item['quantity'], 2) }}</span>
-                        </li>
-                    @endforeach
+                <ul class="list-group mb-3">
+                    <li class="list-group-item d-flex justify-content-between lh-sm">
+                        <div>
+                            <h6 class="my-0">Grey Hoodie</h6>
+                            <small class="text-body-secondary">Brief description</small>
+                        </div>
+                        <span class="text-body-secondary">$12</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between lh-sm">
+                        <div>
+                            <h6 class="my-0">Dog Food</h6>
+                            <small class="text-body-secondary">Brief description</small>
+                        </div>
+                        <span class="text-body-secondary">$8</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between lh-sm">
+                        <div>
+                            <h6 class="my-0">Soft Toy</h6>
+                            <small class="text-body-secondary">Brief description</small>
+                        </div>
+                        <span class="text-body-secondary">$5</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between">
+                        <span class="fw-bold">Total (USD)</span>
+                        <strong>$20</strong>
+                    </li>
                 </ul>
 
-                <li class="list-group-item d-flex justify-content-between">
-                    <span class="fw-bold">Total (USD)</span>
-                    <strong id="cart-total">${{ number_format($total, 2) }}</strong>
-                </li>
-
-
-
-                <a href="{{ route('cart.checkout') }}" class="w-100 btn btn-primary btn-lg">Continua la compra</a>
-
+                <button class="w-100 btn btn-primary btn-lg" type="submit">Continue to checkout</button>
             </div>
         </div>
     </div>
@@ -241,13 +236,10 @@
                             <a href="#" class="mx-3" data-bs-toggle="offcanvas"
                                 data-bs-target="#offcanvasCart" aria-controls="offcanvasCart">
                                 <iconify-icon icon="mdi:cart" class="fs-4 position-relative"></iconify-icon>
-                        <li>
-                            <a href="#" class="mx-3" data-bs-toggle="offcanvas"
-                                data-bs-target="#offcanvasCart" aria-controls="offcanvasCart">
-                                <iconify-icon icon="mdi:cart" class="fs-4 position-relative"></iconify-icon>
-                                                            </a>
-                        </li>
-                        </a>
+                                <span class="position-absolute translate-middle badge rounded-circle bg-primary pt-2">
+                                    03
+                                </span>
+                            </a>
                         </li>
 
                         <li>
@@ -284,7 +276,7 @@
                                 <a href="#" class="nav-link">Blog</a>
                             </li>
                             <li class="nav-item">
-                                <a href="{{ route('products') }}" class="nav-link">Productos</a>
+                                <a href="#" class="nav-link">Productos</a>
                             </li>
                             <li class="nav-item">
                                 <a href="#" class="nav-link">Contacto</a>
@@ -296,30 +288,11 @@
 
                         <div class="d-none d-lg-flex align-items-end">
                             <ul class="d-flex justify-content-end list-unstyled m-0">
-                                <li class="mx-3 dropdown">
-                                    @guest
-                                        <a href="{{ route('login') }}" class="d-flex align-items-center">
-                                            <iconify-icon icon="healthicons:person" class="fs-4"></iconify-icon>
-                                        </a>
-                                    @else
-                                        <a href="#" class="dropdown-toggle d-flex align-items-center"
-                                            id="userDropdown" role="button" data-bs-toggle="dropdown"
-                                            aria-expanded="false">
-                                            <iconify-icon icon="healthicons:person" class="fs-4"></iconify-icon>
-                                            <span class="ms-2 d-none d-md-inline">{{ Auth::user()->name }}</span>
-                                        </a>
-                                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
-                                            <li><a class="dropdown-item" href="#">Mi cuenta</a></li>
-                                            <li>
-                                                <form method="POST" action="{{ route('logout') }}">
-                                                    @csrf
-                                                    <button type="submit" class="dropdown-item">Cerrar sesión</button>
-                                                </form>
-                                            </li>
-                                        </ul>
-                                    @endguest
+                                <li>
+                                    <a href="index.html" class="mx-3">
+                                        <iconify-icon icon="healthicons:person" class="fs-4"></iconify-icon>
+                                    </a>
                                 </li>
-
                                 <li>
                                     <a href="index.html" class="mx-3">
                                         <iconify-icon icon="mdi:heart" class="fs-4"></iconify-icon>
@@ -330,7 +303,10 @@
                                     <a href="index.html" class="mx-3" data-bs-toggle="offcanvas"
                                         data-bs-target="#offcanvasCart" aria-controls="offcanvasCart">
                                         <iconify-icon icon="mdi:cart" class="fs-4 position-relative"></iconify-icon>
-                                        
+                                        <span
+                                            class="position-absolute translate-middle badge rounded-circle bg-primary pt-2">
+                                            03
+                                        </span>
                                     </a>
                                 </li>
                             </ul>
@@ -348,178 +324,10 @@
         </div>
     </header>
 
-    <section id="banner" style="background: #F9F3EC;">
-        <div class="container">
-            <div class="swiper main-swiper">
-                <div class="swiper-wrapper">
 
-                    <div class="swiper-slide py-5">
-                        <div class="row banner-content align-items-center">
-                            <div class="img-wrapper col-md-5">
-                                <img src="{{ asset('ecommerce/images/banner-img.png') }}" class="img-fluid">
-                            </div>
-                            <div class="content-wrapper col-md-7 p-5 mb-5">
-                                <h2 class="banner-title display-1 fw-normal">Los mejores accesorios para
-                                </h2>
-                                <h2 class="banner-title display-1 fw-normal"> <span class="text-primary">tus
-                                        mascotas</span>
-                                </h2>
-                                <a href="#" class="btn btn-outline-dark btn-lg text-uppercase fs-6 rounded-1">
-                                    Comprar ahora
-                                    <svg width="24" height="24" viewBox="0 0 24 24" class="mb-1">
-                                        <use xlink:href="#arrow-right"></use>
-                                    </svg></a>
-                            </div>
-
-                        </div>
-                    </div>
-                    <div class="swiper-slide py-5">
-                        <div class="row banner-content align-items-center">
-                            <div class="img-wrapper col-md-5">
-                                <img src="{{ asset('ecommerce/images/banner-img3.png') }}" class="img-fluid">
-                            </div>
-                            <div class="content-wrapper col-md-7 p-5 mb-5">
-                                <h2 class="banner-title display-1 fw-normal">El mejor cuidado para
-                                </h2>
-                                <h2 class="banner-title display-1 fw-normal"> <span class="text-primary">tus
-                                        mascotas</span>
-                                </h2>
-                                <a href="#" class="btn btn-outline-dark btn-lg text-uppercase fs-6 rounded-1">
-                                    Comprar ahora
-                                    <svg width="24" height="24" viewBox="0 0 24 24" class="mb-1">
-                                        <use xlink:href="#arrow-right"></use>
-                                    </svg></a>
-                            </div>
-
-                        </div>
-                    </div>
-                    <div class="swiper-slide py-5">
-                        <div class="row banner-content align-items-center">
-                            <div class="img-wrapper col-md-5">
-                                <img src="{{ asset('ecommerce/images/banner-img4.png') }}" class="img-fluid">
-                            </div>
-                            <div class="content-wrapper col-md-7 p-5 mb-5">
-                                <h2 class="banner-title display-1 fw-normal">La mejor ropa para
-                                </h2>
-                                <h2 class="banner-title display-1 fw-normal"> <span class="text-primary">tus
-                                        mascotas</span>
-                                </h2>
-                                <a href="#" class="btn btn-outline-dark btn-lg text-uppercase fs-6 rounded-1">
-                                    Comprar ahora
-                                    <svg width="24" height="24" viewBox="0 0 24 24" class="mb-1">
-                                        <use xlink:href="#arrow-right"></use>
-                                    </svg></a>
-                            </div>
-
-                        </div>
-                    </div>
-                </div>
-
-                <div class="swiper-pagination mb-5"></div>
-
-            </div>
-        </div>
-    </section>
-
-    <section id="categories">
-        <div class="container my-3 py-5">
-            <div class="row my-5">
-                <div class="col text-center">
-                    <a href="#" class="categories-item">
-                        <iconify-icon class="category-icon" icon="ph:bowl-food"></iconify-icon>
-                        <h5>Comidas</h5>
-                    </a>
-                </div>
-                <div class="col text-center">
-                    <a href="#" class="categories-item">
-                        <iconify-icon class="category-icon" icon="ph:bird"></iconify-icon>
-                        <h5>Pajaros</h5>
-                    </a>
-                </div>
-                <div class="col text-center">
-                    <a href="#" class="categories-item">
-                        <iconify-icon class="category-icon" icon="ph:dog"></iconify-icon>
-                        <h5>Perros</h5>
-                    </a>
-                </div>
-                <div class="col text-center">
-                    <a href="#" class="categories-item">
-                        <iconify-icon class="category-icon" icon="ph:fish"></iconify-icon>
-                        <h5>Peces</h5>
-                    </a>
-                </div>
-                <div class="col text-center">
-                    <a href="#" class="categories-item">
-                        <iconify-icon class="category-icon" icon="ph:cat"></iconify-icon>
-                        <h5>Gatos</h5>
-                    </a>
-                </div>
-            </div>
-        </div>
-    </section>
+   
 
 
-    <section id="foodies" class="my-5">
-        <div class="container my-5 py-5">
-
-            <div class="section-header d-md-flex justify-content-between align-items-center">
-                <h2 class="display-3 fw-normal">Pet Foodies</h2>
-                <div>
-                    <a href="#" class="btn btn-outline-dark btn-lg text-uppercase fs-6 rounded-1">
-                        Comprar ahora
-                        <svg width="24" height="24" viewBox="0 0 24 24" class="mb-1">
-                            <use xlink:href="#arrow-right"></use>
-                        </svg></a>
-                </div>
-            </div>
-
-            <div class="isotope-container row">
-                @foreach ($products as $product)
-                    <div class="item cat col-md-4 col-lg-3 my-4">
-                        <div class="card position-relative">
-                            <a href="single-product.html"><img src="{{ asset('storage/' . $product->image) }}"
-                                    style="width: 300px; height: 300px;" class="rounded-4" alt="image"></a>
-                            <div class="card-body p-0">
-                                <a href="single-product.html">
-                                    <h3 class="card-title pt-4 m-0">{{ $product->name }}</h3>
-                                </a>
-
-                                <div class="card-text">
-                                    <span class="rating secondary-font">
-                                        <iconify-icon icon="clarity:star-solid" class="text-primary"></iconify-icon>
-                                        <iconify-icon icon="clarity:star-solid" class="text-primary"></iconify-icon>
-                                        <iconify-icon icon="clarity:star-solid" class="text-primary"></iconify-icon>
-                                        <iconify-icon icon="clarity:star-solid" class="text-primary"></iconify-icon>
-                                        <iconify-icon icon="clarity:star-solid" class="text-primary"></iconify-icon>
-                                        5.0</span>
-
-                                    <h3 class="secondary-font text-primary">
-                                        ${{ $product->price - $product->discount }}</h3>
-
-                                    <div class="d-flex flex-wrap mt-3">
-                                        <a href="#" class="btn-cart me-3 px-4 pt-3 pb-3 add-to-cart-btn"
-                                            data-id="{{ $product->id }}">
-                                            <h5 class="text-uppercase m-0">Add to Cart</h5>
-                                        </a>
-
-
-                                        <a href="#" class="btn-wishlist px-4 pt-3 ">
-                                            <iconify-icon icon="fluent:heart-28-filled" class="fs-5"></iconify-icon>
-                                        </a>
-                                    </div>
-
-
-                                </div>
-
-                            </div>
-
-                        </div>
-                    </div>
-                @endforeach
-
-            </div>
-        </div>
-    </section>
 
     <div id="footer-bottom">
         <div class="container">
@@ -548,86 +356,6 @@
     <script src="{{ asset('ecommerce/js/script.js') }}"></script>
 
     <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
-    <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            const buttons = document.querySelectorAll(".add-to-cart-btn");
-
-            buttons.forEach(button => {
-                button.addEventListener("click", function(e) {
-                    e.preventDefault();
-                    const productId = this.dataset.id;
-
-                    fetch("{{ route('cart.add') }}", {
-                            method: "POST",
-                            headers: {
-                                "Content-Type": "application/json",
-                                "X-CSRF-TOKEN": '{{ csrf_token() }}',
-                                "Accept": "application/json"
-                            },
-                            body: JSON.stringify({
-                                product_id: productId
-                            })
-                        })
-                        .then(res => res.json())
-                        .then(data => {
-                            showAlert(data.message || "Producto agregado");
-                            updateCartUI();
-                        })
-                        .catch(err => {
-                            console.error("Error:", err);
-                            showAlert("Ocurrió un error", "danger");
-                        });
-                });
-            });
-
-            function showAlert(message, type = "success") {
-                const alertDiv = document.createElement("div");
-                alertDiv.className =
-                    `alert alert-${type} alert-dismissible fade show position-fixed top-0 end-0 m-3`;
-                alertDiv.style.zIndex = 9999;
-                alertDiv.role = "alert";
-                alertDiv.innerHTML = `
-                    ${message}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                `;
-
-                document.body.appendChild(alertDiv);
-
-                setTimeout(() => {
-                    alertDiv.classList.remove("show");
-                    alertDiv.remove();
-                }, 3000);
-            }
-
-            function updateCartUI() {
-                fetch("{{ route('cart.json') }}")
-                    .then(res => res.json())
-                    .then(data => {
-                        const cartList = document.querySelector("#cart-items");
-                        const cartTotal = document.querySelector("#cart-total");
-                        const cartCount = document.querySelector("#cart-count");
-
-                        cartList.innerHTML = "";
-                        data.items.forEach(item => {
-                            const li = document.createElement("li");
-                            li.className = "list-group-item d-flex justify-content-between lh-sm";
-                            li.innerHTML = `
-                    <div>
-                        <h6 class="my-0">${item.name}</h6>
-                        <small class="text-muted">Cantidad: ${item.quantity}</small>
-                    </div>
-                    <span class="text-muted">$${(item.subtotal).toFixed(2)}</span>
-                `;
-                            cartList.appendChild(li);
-                        });
-
-                        cartTotal.textContent = `$${(data.total).toFixed(2)}`;
-                        cartCount.textContent = data.count;
-                    });
-            }
-        });
-    </script>
-
 </body>
 
 </html>

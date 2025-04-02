@@ -9,7 +9,13 @@ class EcommerceController extends Controller
 {
     public function index()
     {
-        $products = Product::all(); // o lo que quieras mostrar
+        $products = Product::latest()->take(8)->get();
         return view('ecommerce.index', compact('products'));
+    }
+
+    public function products()
+    {
+        $products = Product::all();
+        return view('ecommerce.products', compact('products'));
     }
 }
