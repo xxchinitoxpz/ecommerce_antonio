@@ -422,7 +422,7 @@
                                     <div class="d-flex flex-wrap mt-3">
                                         <a href="#" class="btn-cart me-3 px-4 pt-3 pb-3 add-to-cart-btn"
                                             data-id="{{ $product->id }}">
-                                            <h5 class="text-uppercase m-0">Add to Cart</h5>
+                                            <h5 class="text-uppercase m-0">Add to Cart2555654</h5>
                                         </a>
 
 
