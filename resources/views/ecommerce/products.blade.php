@@ -110,37 +110,42 @@
             <div class="order-md-last">
                 <h4 class="d-flex justify-content-between align-items-center mb-3">
                     <span class="text-primary">Your cart</span>
-                    <span class="badge bg-primary rounded-circle pt-2">3</span>
+                    {{-- @php
+                        $cartQty1 = array_sum(array_column(session('cart', []), 'quantity'));
+                    @endphp
+                    <span class="badge bg-primary rounded-circle pt-2">{{ $cartQty1 }}</span> --}}
+                    <span id="cart-count" class="badge bg-primary rounded-circle pt-2">
+                        {{ array_sum(array_column(session('cart', []), 'quantity')) }}
+                    </span>
+
                 </h4>
-                <ul class="list-group mb-3">
-                    <li class="list-group-item d-flex justify-content-between lh-sm">
-                        <div>
-                            <h6 class="my-0">Grey Hoodie</h6>
-                            <small class="text-body-secondary">Brief description</small>
-                        </div>
-                        <span class="text-body-secondary">$12</span>
-                    </li>
-                    <li class="list-group-item d-flex justify-content-between lh-sm">
-                        <div>
-                            <h6 class="my-0">Dog Food</h6>
-                            <small class="text-body-secondary">Brief description</small>
-                        </div>
-                        <span class="text-body-secondary">$8</span>
-                    </li>
-                    <li class="list-group-item d-flex justify-content-between lh-sm">
-                        <div>
-                            <h6 class="my-0">Soft Toy</h6>
-                            <small class="text-body-secondary">Brief description</small>
-                        </div>
-                        <span class="text-body-secondary">$5</span>
-                    </li>
-                    <li class="list-group-item d-flex justify-content-between">
-                        <span class="fw-bold">Total (USD)</span>
-                        <strong>$20</strong>
-                    </li>
+                <ul class="list-group mb-3" id="cart-items">
+                    @php
+                        $cart = session('cart', []);
+                        $total = 0;
+                    @endphp
+
+                    @foreach ($cart as $item)
+                        @php $total += $item['price'] * $item['quantity']; @endphp
+                        <li class="list-group-item d-flex justify-content-between lh-sm">
+                            <div>
+                                <h6 class="my-0">{{ $item['name'] }}</h6>
+                                <small class="text-muted">Cantidad: {{ $item['quantity'] }}</small>
+                            </div>
+                            <span class="text-muted">${{ number_format($item['price'] * $item['quantity'], 2) }}</span>
+                        </li>
+                    @endforeach
                 </ul>
 
-                <button class="w-100 btn btn-primary btn-lg" type="submit">Continue to checkout</button>
+                <li class="list-group-item d-flex justify-content-between">
+                    <span class="fw-bold">Total (USD)</span>
+                    <strong id="cart-total">${{ number_format($total, 2) }}</strong>
+                </li>
+
+
+
+                <a href="{{ route('cart.checkout') }}" class="w-100 btn btn-primary btn-lg">Continua la compra</a>
+
             </div>
         </div>
     </div>
@@ -236,10 +241,13 @@
                             <a href="#" class="mx-3" data-bs-toggle="offcanvas"
                                 data-bs-target="#offcanvasCart" aria-controls="offcanvasCart">
                                 <iconify-icon icon="mdi:cart" class="fs-4 position-relative"></iconify-icon>
-                                <span class="position-absolute translate-middle badge rounded-circle bg-primary pt-2">
-                                    03
-                                </span>
+                        <li>
+                            <a href="#" class="mx-3" data-bs-toggle="offcanvas"
+                                data-bs-target="#offcanvasCart" aria-controls="offcanvasCart">
+                                <iconify-icon icon="mdi:cart" class="fs-4 position-relative"></iconify-icon>
                             </a>
+                        </li>
+                        </a>
                         </li>
 
                         <li>
@@ -276,7 +284,7 @@
                                 <a href="#" class="nav-link">Blog</a>
                             </li>
                             <li class="nav-item">
-                                <a href="#" class="nav-link">Productos</a>
+                                <a href="{{ route('products') }}" class="nav-link">Productos</a>
                             </li>
                             <li class="nav-item">
                                 <a href="#" class="nav-link">Contacto</a>
@@ -288,11 +296,30 @@
 
                         <div class="d-none d-lg-flex align-items-end">
                             <ul class="d-flex justify-content-end list-unstyled m-0">
-                                <li>
-                                    <a href="index.html" class="mx-3">
-                                        <iconify-icon icon="healthicons:person" class="fs-4"></iconify-icon>
-                                    </a>
+                                <li class="mx-3 dropdown">
+                                    @guest
+                                        <a href="{{ route('login') }}" class="d-flex align-items-center">
+                                            <iconify-icon icon="healthicons:person" class="fs-4"></iconify-icon>
+                                        </a>
+                                    @else
+                                        <a href="#" class="dropdown-toggle d-flex align-items-center"
+                                            id="userDropdown" role="button" data-bs-toggle="dropdown"
+                                            aria-expanded="false">
+                                            <iconify-icon icon="healthicons:person" class="fs-4"></iconify-icon>
+                                            <span class="ms-2 d-none d-md-inline">{{ Auth::user()->name }}</span>
+                                        </a>
+                                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                                            <li><a class="dropdown-item" href="#">Mi cuenta</a></li>
+                                            <li>
+                                                <form method="POST" action="{{ route('logout') }}">
+                                                    @csrf
+                                                    <button type="submit" class="dropdown-item">Cerrar sesión</button>
+                                                </form>
+                                            </li>
+                                        </ul>
+                                    @endguest
                                 </li>
+
                                 <li>
                                     <a href="index.html" class="mx-3">
                                         <iconify-icon icon="mdi:heart" class="fs-4"></iconify-icon>
@@ -303,10 +330,7 @@
                                     <a href="index.html" class="mx-3" data-bs-toggle="offcanvas"
                                         data-bs-target="#offcanvasCart" aria-controls="offcanvasCart">
                                         <iconify-icon icon="mdi:cart" class="fs-4 position-relative"></iconify-icon>
-                                        <span
-                                            class="position-absolute translate-middle badge rounded-circle bg-primary pt-2">
-                                            03
-                                        </span>
+
                                     </a>
                                 </li>
                             </ul>
@@ -322,30 +346,107 @@
 
 
         </div>
+
+
+
     </header>
 
-
-   
-
+    <section id="foodies" class="my-5">
 
 
-    <div id="footer-bottom">
-        <div class="container">
-            <hr class="m-0">
-            <div class="row mt-3">
-                <div class="col-md-6 copyright">
-                    <p class="secondary-font">© 2023 Waggy. All rights reserved.</p>
+        <div class="container my-5 py-5">
+            <form method="GET" action="{{ route('products') }}" class="row mb-4">
+                <div class="col-md-4">
+                    <label for="category_id" class="form-label">Categoría</label>
+                    <select name="category_id" id="category_id" class="form-select">
+                        <option value="">Todas</option>
+                        @foreach ($categories as $category)
+                            <option value="{{ $category->id }}"
+                                {{ request('category_id') == $category->id ? 'selected' : '' }}>
+                                {{ $category->name }}
+                            </option>
+                        @endforeach
+                    </select>
                 </div>
-                <div class="col-md-6 text-md-end">
-                    <p class="secondary-font">Free HTML Template by <a href="https://templatesjungle.com/"
-                            target="_blank" class="text-decoration-underline fw-bold text-black-50">
-                            TemplatesJungle</a> Distributed by <a href="https://themewagon.com/" target="_blank"
-                            class="text-decoration-underline fw-bold text-black-50"> ThemeWagon</a></p>
+                <div class="col-md-4">
+                    <label for="brand_id" class="form-label">Marca</label>
+                    <select name="brand_id" id="brand_id" class="form-select">
+                        <option value="">Todas</option>
+                        @foreach ($brands as $brand)
+                            <option value="{{ $brand->id }}"
+                                {{ request('brand_id') == $brand->id ? 'selected' : '' }}>
+                                {{ $brand->name }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="col-md-4 d-flex align-items-end">
+                    <button type="submit" class="btn btn-primary w-100">Filtrar</button>
+                </div>
+            </form>
+            <div class="section-header d-md-flex justify-content-between align-items-center">
+                <h2 class="display-3 fw-normal">Pet Foodies</h2>
+                <div>
+                    <a href="#" class="btn btn-outline-dark btn-lg text-uppercase fs-6 rounded-1">
+                        Comprar ahora
+                        <svg width="24" height="24" viewBox="0 0 24 24" class="mb-1">
+                            <use xlink:href="#arrow-right"></use>
+                        </svg></a>
                 </div>
             </div>
-        </div>
-    </div>
 
+            <div class="isotope-container row">
+
+                @foreach ($products as $product)
+                    <div class="item cat col-md-4 col-lg-3 my-4">
+                        <div class="card position-relative">
+                            <a href="single-product.html"><img src="{{ asset('storage/' . $product->image) }}"
+                                    style="width: 300px; height: 300px;" class="rounded-4" alt="image"></a>
+                            <div class="card-body p-0">
+                                <a href="single-product.html">
+                                    <h3 class="card-title pt-4 m-0">{{ $product->name }}</h3>
+                                </a>
+
+                                <div class="card-text">
+                                    <span class="rating secondary-font">
+                                        <iconify-icon icon="clarity:star-solid" class="text-primary"></iconify-icon>
+                                        <iconify-icon icon="clarity:star-solid" class="text-primary"></iconify-icon>
+                                        <iconify-icon icon="clarity:star-solid" class="text-primary"></iconify-icon>
+                                        <iconify-icon icon="clarity:star-solid" class="text-primary"></iconify-icon>
+                                        <iconify-icon icon="clarity:star-solid" class="text-primary"></iconify-icon>
+                                        5.0</span>
+
+                                    <h3 class="secondary-font text-primary">
+                                        ${{ $product->price - $product->discount }}</h3>
+
+                                    <div class="d-flex flex-wrap mt-3">
+                                        <a href="#" class="btn-cart me-3 px-4 pt-3 pb-3 add-to-cart-btn"
+                                            data-id="{{ $product->id }}">
+                                            <h5 class="text-uppercase m-0">Add to Cart</h5>
+                                        </a>
+
+
+                                        <a href="#" class="btn-wishlist px-4 pt-3 ">
+                                            <iconify-icon icon="fluent:heart-28-filled" class="fs-5"></iconify-icon>
+                                        </a>
+                                    </div>
+
+
+                                </div>
+
+                            </div>
+
+                        </div>
+                    </div>
+                @endforeach
+
+
+            </div>
+            <div class="mt-4 d-flex justify-content-center">
+                {{ $products->appends(request()->query())->links('pagination::bootstrap-5') }}
+            </div>
+        </div>
+    </section>
 
     <script src="{{ asset('ecommerce/js/jquery-1.11.0.min.js') }}"></script>
     <script src="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.js"></script>
@@ -356,6 +457,86 @@
     <script src="{{ asset('ecommerce/js/script.js') }}"></script>
 
     <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const buttons = document.querySelectorAll(".add-to-cart-btn");
+
+            buttons.forEach(button => {
+                button.addEventListener("click", function(e) {
+                    e.preventDefault();
+                    const productId = this.dataset.id;
+
+                    fetch("{{ route('cart.add') }}", {
+                            method: "POST",
+                            headers: {
+                                "Content-Type": "application/json",
+                                "X-CSRF-TOKEN": '{{ csrf_token() }}',
+                                "Accept": "application/json"
+                            },
+                            body: JSON.stringify({
+                                product_id: productId
+                            })
+                        })
+                        .then(res => res.json())
+                        .then(data => {
+                            showAlert(data.message || "Producto agregado");
+                            updateCartUI();
+                        })
+                        .catch(err => {
+                            console.error("Error:", err);
+                            showAlert("Ocurrió un error", "danger");
+                        });
+                });
+            });
+
+            function showAlert(message, type = "success") {
+                const alertDiv = document.createElement("div");
+                alertDiv.className =
+                    `alert alert-${type} alert-dismissible fade show position-fixed top-0 end-0 m-3`;
+                alertDiv.style.zIndex = 9999;
+                alertDiv.role = "alert";
+                alertDiv.innerHTML = `
+                    ${message}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                `;
+
+                document.body.appendChild(alertDiv);
+
+                setTimeout(() => {
+                    alertDiv.classList.remove("show");
+                    alertDiv.remove();
+                }, 3000);
+            }
+
+            function updateCartUI() {
+                fetch("{{ route('cart.json') }}")
+                    .then(res => res.json())
+                    .then(data => {
+                        const cartList = document.querySelector("#cart-items");
+                        const cartTotal = document.querySelector("#cart-total");
+                        const cartCount = document.querySelector("#cart-count");
+
+                        cartList.innerHTML = "";
+                        data.items.forEach(item => {
+                            const li = document.createElement("li");
+                            li.className = "list-group-item d-flex justify-content-between lh-sm";
+                            li.innerHTML = `
+                    <div>
+                        <h6 class="my-0">${item.name}</h6>
+                        <small class="text-muted">Cantidad: ${item.quantity}</small>
+                    </div>
+                    <span class="text-muted">$${(item.subtotal).toFixed(2)}</span>
+                `;
+                            cartList.appendChild(li);
+                        });
+
+                        cartTotal.textContent = `$${(data.total).toFixed(2)}`;
+                        cartCount.textContent = data.count;
+                    });
+            }
+        });
+    </script>
+
 </body>
 
 </html>

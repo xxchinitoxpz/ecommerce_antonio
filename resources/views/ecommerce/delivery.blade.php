@@ -346,52 +346,50 @@
 
 
         </div>
-        <section class="container py-5">
-            <h2 class="mb-4">Resumen de tu compra</h2>
-
-            <div class="table-responsive">
-                <table class="table table-bordered align-middle">
-                    <thead class="table-light">
-                        <tr>
-                            <th>Producto</th>
-                            <th>Cantidad</th>
-                            <th>Precio Unitario</th>
-                            <th>Subtotal</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @forelse ($cart as $item)
-                            <tr>
-                                <td>{{ $item['name'] }}</td>
-                                <td>{{ $item['quantity'] }}</td>
-                                <td>${{ number_format($item['price'], 2) }}</td>
-                                <td>${{ number_format($item['price'] * $item['quantity'], 2) }}</td>
-                            </tr>
-                        @empty
-                            <tr>
-                                <td colspan="4" class="text-center">Tu carrito está vacío</td>
-                            </tr>
-                        @endforelse
-                    </tbody>
-                    @if (!empty($cart))
-                        <tfoot>
-                            <tr>
-                                <td colspan="3" class="text-end fw-bold">Total:</td>
-                                <td class="fw-bold">${{ number_format($total, 2) }}</td>
-                            </tr>
-                        </tfoot>
-                    @endif
-                </table>
-            </div>
-            @if (!empty($cart))
-                <div class="text-end">
-                    <a href="{{ route('cart.delivery') }}" class="btn btn-success btn-lg mt-3">Finalizar compra</a>
-                </div>
-            @endif
-
-        </section>
 
     </header>
+
+    <div class="container py-5">
+        <h2 class="mb-4">Datos de entrega y pago</h2>
+
+        <form action="{{ route('cart.finalize') }}" method="POST">
+            @csrf
+
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <label>Nombre completo</label>
+                    <input type="text" name="name" class="form-control" required>
+                </div>
+                <div class="col-md-6">
+                    <label>DNI</label>
+                    <input type="text" name="dni" class="form-control" required>
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <label>Teléfono</label>
+                    <input type="text" name="phone" class="form-control" required>
+                </div>
+                <div class="col-md-6">
+                    <label>Dirección</label>
+                    <input type="text" name="address" class="form-control" required>
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label>Tipo de pago</label>
+                <select name="payment_type_id" class="form-select" required>
+                    <option value="">Seleccionar</option>
+                    @foreach ($paymentTypes as $type)
+                        <option value="{{ $type->id }}">{{ $type->name }}</option>
+                    @endforeach
+                </select>
+            </div>
+
+            <button class="btn btn-success">Finalizar compra</button>
+        </form>
+    </div>
 
 
 

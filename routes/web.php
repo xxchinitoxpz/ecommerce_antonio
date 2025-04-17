@@ -16,6 +16,9 @@ Route::get('/cart/content', [CartController::class, 'content'])->name('cart.cont
 
 Route::get('/cart/json', [CartController::class, 'json'])->name('cart.json');
 Route::get('/checkout', [CartController::class, 'checkout'])->name('cart.checkout');
+Route::get('/checkout/info', [CartController::class, 'deliveryForm'])->name('cart.delivery');
+Route::post('/checkout/finalize', [CartController::class, 'finalizePurchase'])->name('cart.finalize');
+
 
 
 Route::view('dashboard', 'dashboard')
